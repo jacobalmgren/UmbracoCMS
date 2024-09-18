@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy ASP.Net Core app to Azure Web App - umbraco-cms-jacobalmgren
 
 on:
@@ -19,20 +16,20 @@ jobs:
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '8.x'
-          include-prerelease: true
+          dotnet-version: '8.x'  # Using .NET 8
+          include-prerelease: true  # Ensure pre-release .NET 8 is included
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release -o ./publish  # Use publish directory
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ./publish  # Ensure this matches the output folder
 
   deploy:
     runs-on: windows-latest
@@ -54,4 +51,4 @@ jobs:
           app-name: 'umbraco-cms-jacobalmgren'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4AA4DC7033384F3A98185055180F93EA }}
-          package: .
+          package: ./publish  # Make sure the package points to the correct path
